@@ -23,8 +23,6 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        Move();
-
         Jump();
 
         Fall();
@@ -32,6 +30,8 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
+        Move();
+
         UpdateIsGrounded();
     }
 

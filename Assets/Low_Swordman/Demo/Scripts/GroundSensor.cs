@@ -1,18 +1,20 @@
 ﻿using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Low_Swordman.Demo.Scripts
 {
     public class GroundSensor : MonoBehaviour
     {
-        public PlayerController m_root;
+        [FormerlySerializedAs("m_root")]
+        public PlayerController mRoot;
 
         // Use this for initialization
         private void Start()
         {
-            m_root = transform.root.GetComponent<PlayerController>();
+            mRoot = transform.root.GetComponent<PlayerController>();
         }
 
-        private ContactPoint2D[] contacts = new ContactPoint2D[1];
+        private ContactPoint2D[] _contacts = new ContactPoint2D[1];
 
         private void OnTriggerStay2D(Collider2D other)
         {
@@ -20,24 +22,24 @@ namespace Low_Swordman.Demo.Scripts
             {
                 if (other.CompareTag("Ground"))
                 {
-                    m_root.Is_DownJump_GroundCheck = true;
+                    mRoot.isDownJumpGroundCheck = true;
                 }
                 else
                 {
-                    m_root.Is_DownJump_GroundCheck = false;
+                    mRoot.isDownJumpGroundCheck = false;
                 }
 
-                if (m_root.m_rigidbody.velocity.y <= 0)
+                if (mRoot.mRigidbody.velocity.y <= 0)
                 {
-                    m_root.isGrounded = true;
-                    m_root.currentJumpCount = 0;
+                    mRoot.isGrounded = true;
+                    mRoot.currentJumpCount = 0;
                 }
             }
         }
 
         private void OnTriggerExit2D(Collider2D other)
         {
-            m_root.isGrounded = false;
+            mRoot.isGrounded = false;
         }
     }
 }

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ContentModelStore">
+    <e p="C:\GitHub\Platform_2D_Prototype" t="IncludeRecursive">
+      <e p="Assembly-CSharp.csproj" t="IncludeRecursive" />
+      <e p="Assets" t="Include">
+        <e p="Bounds2D.cs" t="Include" />
+        <e p="FixBoxColliderSize.cs" t="Include" />
+        <e p="FixCollisionPosition.cs" t="Include" />
+        <e p="Low_Swordman" t="Include">
+          <e p="Demo" t="Include">
+            <e p="Scripts" t="Include">
+              <e p="CameraController.cs" t="Include" />
+              <e p="Demo_GM.cs" t="Include" />
+              <e p="GroundSensor.cs" t="Include" />
+              <e p="PlayerController.cs" t="Include" />
+              <e p="Swordman.cs" t="Include" />
+            </e>
+          </e>
+        </e>
+        <e p="NewCollision2D.cs" t="Include" />
+        <e p="PlayerController.cs" t="Include" />
+        <e p="SpriteCollider.cs" t="Include" />
+        <e p="TestKick.cs" t="Include" />
+      </e>
+      <e p="obj" t="ExcludeRecursive" />
+      <e p="Packages" t="ExcludeRecursive" />
+      <e p="Platform_2D_Prototype.sln" t="IncludeFlat" />
+      <e p="Temp\bin" t="ExcludeRecursive" />
+    </e>
+    <e p="C:\Users\paulo\.Rider2019.3\system\extResources" t="IncludeRecursive" />
+    <e p="C:\Users\paulo\.Rider2019.3\system\resharper-host\local\Transient\ReSharperHost\v193\SolutionCaches\_Platform_2D_Prototype.328450054.00" t="ExcludeRecursive" />
+  </component>
+</project>

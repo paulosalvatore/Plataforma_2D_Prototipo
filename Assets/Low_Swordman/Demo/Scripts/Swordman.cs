@@ -6,41 +6,41 @@ namespace Low_Swordman.Demo.Scripts
     {
         private void Start()
         {
-            m_CapsulleCollider = transform.GetComponent<CapsuleCollider2D>();
-            m_Anim = transform.Find("model").GetComponent<Animator>();
-            m_rigidbody = transform.GetComponent<Rigidbody2D>();
+            MCapsulleCollider = transform.GetComponent<CapsuleCollider2D>();
+            MAnim = transform.Find("model").GetComponent<Animator>();
+            mRigidbody = transform.GetComponent<Rigidbody2D>();
         }
 
         private void Update()
         {
-            checkInput();
+            CheckInput();
 
-            if (m_rigidbody.velocity.magnitude > 30)
+            if (mRigidbody.velocity.magnitude > 30)
             {
-                m_rigidbody.velocity = new Vector2(m_rigidbody.velocity.x - 0.1f, m_rigidbody.velocity.y - 0.1f);
+                mRigidbody.velocity = new Vector2(mRigidbody.velocity.x - 0.1f, mRigidbody.velocity.y - 0.1f);
             }
         }
 
-        public void checkInput()
+        public void CheckInput()
         {
             if (Input.GetKeyDown(KeyCode.S)) //아래 버튼 눌렀을때.
             {
-                IsSit = true;
-                m_Anim.Play("Sit");
+                isSit = true;
+                MAnim.Play("Sit");
             }
             else if (Input.GetKeyUp(KeyCode.S))
             {
-                m_Anim.Play("Idle");
-                IsSit = false;
+                MAnim.Play("Idle");
+                isSit = false;
             }
 
             // sit나 die일때 애니메이션이 돌때는 다른 애니메이션이 되지 않게 한다.
-            if (m_Anim.GetCurrentAnimatorStateInfo(0).IsName("Sit") ||
-                m_Anim.GetCurrentAnimatorStateInfo(0).IsName("Die"))
+            if (MAnim.GetCurrentAnimatorStateInfo(0).IsName("Sit") ||
+                MAnim.GetCurrentAnimatorStateInfo(0).IsName("Die"))
             {
                 if (Input.GetKeyDown(KeyCode.Space))
                 {
-                    if (currentJumpCount < JumpCount) // 0 , 1
+                    if (currentJumpCount < jumpCount) // 0 , 1
                     {
                         DownJump();
                     }
@@ -49,35 +49,35 @@ namespace Low_Swordman.Demo.Scripts
                 return;
             }
 
-            m_MoveX = Input.GetAxis("Horizontal");
+            MMoveX = Input.GetAxis("Horizontal");
 
             GroundCheckUpdate();
 
-            if (!m_Anim.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
+            if (!MAnim.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
             {
                 if (Input.GetKey(KeyCode.Mouse0))
                 {
-                    m_Anim.Play("Attack");
+                    MAnim.Play("Attack");
                 }
                 else
                 {
-                    if (m_MoveX == 0)
+                    if (MMoveX == 0)
                     {
-                        if (!OnceJumpRayCheck)
+                        if (!onceJumpRayCheck)
                         {
-                            m_Anim.Play("Idle");
+                            MAnim.Play("Idle");
                         }
                     }
                     else
                     {
-                        m_Anim.Play("Run");
+                        MAnim.Play("Run");
                     }
                 }
             }
 
             if (Input.GetKey(KeyCode.Alpha1))
             {
-                m_Anim.Play("Die");
+                MAnim.Play("Die");
             }
 
             // 기타 이동 인풋.
@@ -86,19 +86,19 @@ namespace Low_Swordman.Demo.Scripts
             {
                 if (isGrounded) // 땅바닥에 있었을때.
                 {
-                    if (m_Anim.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
+                    if (MAnim.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
                     {
                         return;
                     }
 
-                    transform.transform.Translate(Vector2.right * m_MoveX * MoveSpeed * Time.deltaTime);
+                    transform.transform.Translate(Vector2.right * MMoveX * moveSpeed * Time.deltaTime);
                 }
                 else
                 {
-                    transform.transform.Translate(new Vector3(m_MoveX * MoveSpeed * Time.deltaTime, 0, 0));
+                    transform.transform.Translate(new Vector3(MMoveX * moveSpeed * Time.deltaTime, 0, 0));
                 }
 
-                if (m_Anim.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
+                if (MAnim.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
                 {
                     return;
                 }
@@ -112,19 +112,19 @@ namespace Low_Swordman.Demo.Scripts
             {
                 if (isGrounded) // 땅바닥에 있었을때.
                 {
-                    if (m_Anim.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
+                    if (MAnim.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
                     {
                         return;
                     }
 
-                    transform.transform.Translate(Vector2.right * m_MoveX * MoveSpeed * Time.deltaTime);
+                    transform.transform.Translate(Vector2.right * MMoveX * moveSpeed * Time.deltaTime);
                 }
                 else
                 {
-                    transform.transform.Translate(new Vector3(m_MoveX * MoveSpeed * Time.deltaTime, 0, 0));
+                    transform.transform.Translate(new Vector3(MMoveX * moveSpeed * Time.deltaTime, 0, 0));
                 }
 
-                if (m_Anim.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
+                if (MAnim.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
                 {
                     return;
                 }
@@ -137,16 +137,16 @@ namespace Low_Swordman.Demo.Scripts
 
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                if (m_Anim.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
+                if (MAnim.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
                 {
                     return;
                 }
 
-                if (currentJumpCount < JumpCount) // 0 , 1
+                if (currentJumpCount < jumpCount) // 0 , 1
                 {
-                    if (!IsSit)
+                    if (!isSit)
                     {
-                        prefromJump();
+                        PrefromJump();
                     }
                     else
                     {
@@ -158,10 +158,10 @@ namespace Low_Swordman.Demo.Scripts
 
         protected override void LandingEvent()
         {
-            if (!m_Anim.GetCurrentAnimatorStateInfo(0).IsName("Run") &&
-                !m_Anim.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
+            if (!MAnim.GetCurrentAnimatorStateInfo(0).IsName("Run") &&
+                !MAnim.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
             {
-                m_Anim.Play("Idle");
+                MAnim.Play("Idle");
             }
         }
     }

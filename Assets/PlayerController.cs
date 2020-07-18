@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 [ExecuteInEditMode]
@@ -17,13 +18,20 @@ public class PlayerController : MonoBehaviour
     public Vector2 direction = Vector2.down;
     public float distance = 2f;
 
-    public LayerMask isGroundedLayer;
+    public LayerMask groundLayer;
 
     public Transform[] collisionPoints;
 
+    private bool _jumpPressed;
+
+    private bool _jumpedOnLastFrame;
+
     private void Update()
     {
-        Jump();
+        if (Input.GetButtonDown("Jump"))
+        {
+            _jumpPressed = true;
+        }
 
         Fall();
     }
@@ -32,12 +40,24 @@ public class PlayerController : MonoBehaviour
     {
         Move();
 
+        Jump();
+
         UpdateIsGrounded();
     }
 
     private void Jump()
     {
-        if (Input.GetButtonDown("Jump") && _doubleJumpAvailable)
+        if (_jumpedOnLastFrame)
+        {
+            _jumpedOnLastFrame = false;
+        }
+
+        if (!_jumpPressed)
+        {
+            return;
+        }
+
+        if (_doubleJumpAvailable)
         {
             if (!_isGrounded)
             {
@@ -46,7 +66,11 @@ public class PlayerController : MonoBehaviour
 
             rb.velocity = Vector2.zero;
             rb.AddForce(Vector2.up * jumpForce);
+
+            _jumpedOnLastFrame = true;
         }
+
+        _jumpPressed = false;
     }
 
     private void Fall()
@@ -69,7 +93,7 @@ public class PlayerController : MonoBehaviour
         foreach (var collisionPoint in collisionPoints)
         {
             var startPosition = collisionPoint.position;
-            var raycastHit = Physics2D.Raycast(startPosition, direction, distance, isGroundedLayer);
+            var raycastHit = Physics2D.Raycast(startPosition, direction, distance, groundLayer);
             Debug.DrawRay(startPosition, direction * distance, raycastHit ? Color.green : Color.red);
 
             if (raycastHit)
@@ -90,8 +114,9 @@ public class PlayerController : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        var isCollidingWithGroundLayer =
-            (isGroundedLayer & (1 << collision.gameObject.layer)) == 1 << collision.gameObject.layer;
+        var collisionLayer = 1 << collision.gameObject.layer;
+
+        var isCollidingWithGroundLayer = (groundLayer & collisionLayer) == collisionLayer;
 
         if (_isGrounded && isCollidingWithGroundLayer)
         {
@@ -117,7 +142,7 @@ public class PlayerController : MonoBehaviour
                 _collidingWithPlatforms.Remove(platformEffector2D);
             }
 
-            if (!collision.enabled)
+            if (!collision.enabled || !_isGrounded)
             {
                 platformEffector2D.rotationalOffset = 0;
             }

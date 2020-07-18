@@ -1,47 +1,54 @@
 ﻿using System.Collections;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Low_Swordman.Demo.Scripts
 {
     public abstract class PlayerController : MonoBehaviour
     {
-        public bool IsSit;
+        [FormerlySerializedAs("IsSit")]
+        public bool isSit;
         public int currentJumpCount;
         public bool isGrounded;
-        public bool OnceJumpRayCheck;
+        [FormerlySerializedAs("OnceJumpRayCheck")]
+        public bool onceJumpRayCheck;
 
-        public bool Is_DownJump_GroundCheck; // 다운 점프를 하는데 아래 블록인지 그라운드인지 알려주는 불값
-        protected float m_MoveX;
-        public Rigidbody2D m_rigidbody;
-        protected CapsuleCollider2D m_CapsulleCollider;
-        protected Animator m_Anim;
+        [FormerlySerializedAs("Is_DownJump_GroundCheck")]
+        public bool isDownJumpGroundCheck; // 다운 점프를 하는데 아래 블록인지 그라운드인지 알려주는 불값
+        protected float MMoveX;
+        [FormerlySerializedAs("m_rigidbody")]
+        public Rigidbody2D mRigidbody;
+        protected CapsuleCollider2D MCapsulleCollider;
+        protected Animator MAnim;
 
+        [FormerlySerializedAs("MoveSpeed")]
         [Header("[Setting]")]
-        public float MoveSpeed = 6;
+        public float moveSpeed = 6;
 
-        public int JumpCount = 2;
+        [FormerlySerializedAs("JumpCount")]
+        public int jumpCount = 2;
         public float jumpForce = 15f;
 
         protected void AnimUpdate()
         {
-            if (!m_Anim.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
+            if (!MAnim.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
             {
                 if (Input.GetKey(KeyCode.Mouse0))
                 {
-                    m_Anim.Play("Attack");
+                    MAnim.Play("Attack");
                 }
                 else
                 {
-                    if (m_MoveX == 0)
+                    if (MMoveX == 0)
                     {
-                        if (!OnceJumpRayCheck)
+                        if (!onceJumpRayCheck)
                         {
-                            m_Anim.Play("Idle");
+                            MAnim.Play("Idle");
                         }
                     }
                     else
                     {
-                        m_Anim.Play("Run");
+                        MAnim.Play("Run");
                     }
                 }
             }
@@ -52,15 +59,15 @@ namespace Low_Swordman.Demo.Scripts
             transform.localScale = new Vector3(bLeft ? 1 : -1, 1, 1);
         }
 
-        protected void prefromJump()
+        protected void PrefromJump()
         {
-            m_Anim.Play("Jump");
+            MAnim.Play("Jump");
 
-            m_rigidbody.velocity = new Vector2(0, 0);
+            mRigidbody.velocity = new Vector2(0, 0);
 
-            m_rigidbody.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+            mRigidbody.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
 
-            OnceJumpRayCheck = true;
+            onceJumpRayCheck = true;
             isGrounded = false;
 
             currentJumpCount++;
@@ -73,14 +80,14 @@ namespace Low_Swordman.Demo.Scripts
                 return;
             }
 
-            if (!Is_DownJump_GroundCheck)
+            if (!isDownJumpGroundCheck)
             {
-                m_Anim.Play("Jump");
+                MAnim.Play("Jump");
 
-                m_rigidbody.AddForce(-Vector2.up * 10);
+                mRigidbody.AddForce(-Vector2.up * 10);
                 isGrounded = false;
 
-                m_CapsulleCollider.enabled = false;
+                MCapsulleCollider.enabled = false;
 
                 StartCoroutine(GroundCapsulleColliderTimmerFuc());
             }
@@ -90,44 +97,44 @@ namespace Low_Swordman.Demo.Scripts
         {
             yield return new WaitForSeconds(0.3f);
 
-            m_CapsulleCollider.enabled = true;
+            MCapsulleCollider.enabled = true;
         }
 
         //////바닥 체크 레이케스트
-        private Vector2 RayDir = Vector2.down;
+        private Vector2 _rayDir = Vector2.down;
 
-        private float PretmpY;
-        private float GroundCheckUpdateTic;
-        private float GroundCheckUpdateTime = 0.01f;
+        private float _pretmpY;
+        private float _groundCheckUpdateTic;
+        private float _groundCheckUpdateTime = 0.01f;
 
         protected void GroundCheckUpdate()
         {
-            if (!OnceJumpRayCheck)
+            if (!onceJumpRayCheck)
             {
                 return;
             }
 
-            GroundCheckUpdateTic += Time.deltaTime;
+            _groundCheckUpdateTic += Time.deltaTime;
 
-            if (GroundCheckUpdateTic > GroundCheckUpdateTime)
+            if (_groundCheckUpdateTic > _groundCheckUpdateTime)
             {
-                GroundCheckUpdateTic = 0;
+                _groundCheckUpdateTic = 0;
 
-                if (PretmpY == 0)
+                if (_pretmpY == 0)
                 {
-                    PretmpY = transform.position.y;
+                    _pretmpY = transform.position.y;
 
                     return;
                 }
 
-                var reY = transform.position.y - PretmpY; //    -1  - 0 = -1 ,  -2 -   -1 = -3
+                var reY = transform.position.y - _pretmpY; //    -1  - 0 = -1 ,  -2 -   -1 = -3
 
                 if (reY <= 0)
                 {
                     if (isGrounded)
                     {
                         LandingEvent();
-                        OnceJumpRayCheck = false;
+                        onceJumpRayCheck = false;
                     }
                     else
                     {
@@ -135,7 +142,7 @@ namespace Low_Swordman.Demo.Scripts
                     }
                 }
 
-                PretmpY = transform.position.y;
+                _pretmpY = transform.position.y;
             }
         }
 
